@@ -4,7 +4,7 @@ import './css/pure-min.css';
 import './css/side-menu.css';
 import $ from 'jquery';
 import InputCustomizado from './components/inputCutomizado';
-import { FormularioAutor, TabelaAutores } from './Autor';
+import AutoBox from './Autor';
 
 class App extends Component {
   render() {
@@ -29,8 +29,7 @@ class App extends Component {
             </div>
             <div className="content" id="content">
               
-              <FormularioAutor/>
-              <TabelaAutores/>
+             <AutoBox/>
                       
             </div>
           </div> 

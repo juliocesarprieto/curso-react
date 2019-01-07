@@ -22,8 +22,8 @@ export class FormularioAutor extends Component{
           type: 'post',
           data: JSON.stringify({nome: this.state.nome, email: this.state.email, senha: this.state.senha}),
           success:function(response){
-            console.log("ENVIADO COM SUCESSO");
-          },
+            this.props.callbackAtualizaListagem(response);
+          }.bind(this),
           error: function(response){
             console.log("ERROR");
           }
@@ -61,24 +61,7 @@ export class FormularioAutor extends Component{
     }
 }
 
-export class TabelaAutores extends Component{
-
-    constructor() {
-        super();
-        this.state = {lista : []}; 
-      }
-
-    componentDidMount(){
-        $.ajax({
-              url: "http://cdc-react.herokuapp.com/api/autores",
-              dataType: 'json',
-              success:function(response){
-                console.log(response);
-                this.setState({lista:response});
-              }.bind(this)
-            }
-          );
-      }  
+export class TabelaAutores extends Component{   
 
     render(){
         return (
@@ -92,12 +75,12 @@ export class TabelaAutores extends Component{
               </thead>
               <tbody>
                 {
-                  this.state.lista.map(function(autor){
+                  this.props.lista.map(function(autor){
                     return (
                       <tr key={autor.id}>
                         <td>{autor.nome}</td>
                         <td>{autor.email}</td>
-                    </tr>
+                    </tr> 
                     );
                   })
                 }
@@ -106,4 +89,38 @@ export class TabelaAutores extends Component{
           </div>   
         );
     }
+}
+
+export default class AutorBox extends Component {
+  
+  constructor() {
+    super();
+    this.state = {lista : []};
+    this.atualizaListagem = this.atualizaListagem.bind(this); 
+  }
+
+  componentDidMount(){
+      $.ajax({
+            url: "http://cdc-react.herokuapp.com/api/autores",
+            dataType: 'json',
+            success:function(response){
+              console.log(response);
+              this.setState({lista:response});
+            }.bind(this)
+          }
+        );
+    }
+
+    atualizaListagem(novaLista){
+      this.setState({lista:novaLista});
+    }
+
+  render() {
+    return (
+      <div>
+        <FormularioAutor callbackAtualizaListagem={this.atualizaListagem}/>
+        <TabelaAutores lista={this.state.lista}/>
+      </div>
+    );
+  }
 }
