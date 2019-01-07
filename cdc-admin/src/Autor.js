@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import InputCustomizado from './components/inputCutomizado';
 import Pubsub from 'pubsub-js';
+import TratadorErros from './components/TratadorErros';
 
 export class FormularioAutor extends Component{
     
@@ -25,9 +26,17 @@ export class FormularioAutor extends Component{
           success:function(response){
             // Disparar um aviso geral de novaListagem disponivel
             Pubsub.publish('atualiza-lista-autores', response);
-          },
+            this.setState({nome:'', email:'', senha:''});
+          }.bind(this),
           error: function(response){
-            console.log("ERROR");
+            // recuperar quais foram os erros
+            // exibir a mensagem de erro no campo
+            if(response.status === 400){
+              new TratadorErros().publicaErros(response.responseJSON);
+            }
+          },
+          beforeSend: function(){
+            Pubsub.publish("limpa-erros", {});
           }
         }
       );
