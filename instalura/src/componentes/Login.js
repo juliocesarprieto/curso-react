@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+
 export default class Login extends Component {
 
     constructor(){
@@ -23,12 +24,16 @@ export default class Login extends Component {
                     if(response.ok){
                         return response.text();
                     } else {
-                        this.setState({msg: 'nao foi possivel fazer o login'})
+                        throw new Error("nao foi possivel fazer o login");
                     }
                 })
                 .then(token => {
-                    console.log(token);
+                    localStorage.setItem('auth-token', token);
+                    this.props.history.push('timeline');
                 })
+                .catch(error => {
+                    this.setState({msg:error.message});
+                });
     }
 
     render(){
