@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 
 
 export default class Login extends Component {
 
-    constructor(){
-        super();
-        this.state = {msg: ''};
+    constructor(props){
+        super(props);
+        this.state = {msg: this.props.location.query.msg};
     }
 
     envia(event){
@@ -29,7 +30,8 @@ export default class Login extends Component {
                 })
                 .then(token => {
                     localStorage.setItem('auth-token', token);
-                    this.props.history.push('timeline');
+                    browserHistory.push('/timeline')
+                    //this.props.history.push('timeline');
                 })
                 .catch(error => {
                     this.setState({msg:error.message});
