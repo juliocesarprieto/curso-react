@@ -4,16 +4,22 @@ import './css/reset.css';
 import './css/timeline.css';
 import './css/login.css';
 import App from './App';
-import { BrowserRouter as Router, Route, Switch , Link} from 'react-router-dom';
+import { Router, Route, browserHistory} from 'react-router';
 import Login from './componentes/Login';
+import Logout from './componentes/Logout';
 
+function verificaAutenticacao(nextState, replace){  
+
+  if (localStorage.getItem('auth-token') === null) {
+      replace('/?msg=voce precisa estar logado para acessar');
+  }
+}
 
 ReactDOM.render(
-  <Router>
-    <Switch>
+  <Router history = {browserHistory}>    
       <Route exact path="/" component={Login}/>
-      <Route path="/timeline" component={App}/>
-    </Switch>      
+      <Route path="/timeline" component={App} onEnter={verificaAutenticacao}/>
+      <Route path="/logout" component={Logout}/>         
   </Router>,
   document.getElementById('root')
 );
