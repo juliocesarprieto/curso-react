@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import FotoItem from './Foto';
+import Pubsub from 'pubsub-js';
 
 export default class Timeline extends Component {
 
     constructor(){
         super();
-        this.state = {fotos: []};
+        this.state = {fotos:[]};
     }
 
     carregarFotos(props){
@@ -21,12 +22,18 @@ export default class Timeline extends Component {
         fetch(urlPerfil)
         .then(response => response.json())
         .then(fotos => {
-            this.setState({fotos:fotos});
+            this.setState({fotos});
         });
     }
 
     componentDidMount(){     
         this.carregarFotos(this.props);
+    }
+
+    componentWillMount(){
+        Pubsub.subscribe('timeline', (topico, fotos)=>{
+            this.setState({fotos: fotos.fotos});            
+        });
     }
 
     componentWillReceiveProps(nextProps){
